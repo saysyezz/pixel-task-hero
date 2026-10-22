@@ -53,5 +53,7 @@ assert.ok(html.includes('identity-v04'),'Hero identity stylesheet missing');
 assert.ok(pixelWorld.includes('monster(biome,variant,boss)'),'Monster family silhouettes missing');
 
 for (const marker of ['signature-skills-v04','CROSS SLASH','BLADE STORM','AZURE FINISHER','TRIPLE SHOT','PIERCING ARROW','ARROW RAIN','RUNE BURST','STARFALL NOVA','ARCANE ORB']) assert.ok(html.includes(marker),'Signature effect missing: '+marker);
+assert.ok(html.includes("setHeroPose('hit',t+180)"),'Hero hit reaction missing');
+assert.ok(html.includes("getAttribute('src')!==combatFrame"),'Sprite update guard missing');
 console.log('PASS: file completeness, UI, classes, animation, gameplay references, save system, JS syntax');
 console.log('NOTE: This does not replace interactive browser gameplay and visual regression testing.');
