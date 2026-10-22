@@ -1,0 +1,24 @@
+/* Pixel Task Hero v0.4 — anime pixel hero visual layer.
+   Scoped styles; enabled once the hero visual markup is wired into the game. */
+:root { --hero-pixel-size: 128px; }
+.hero-pixel-stage { position:relative; isolation:isolate; }
+.hero-pixel-stage .spriteimg,
+.hero-pixel-stage .avatarimg { image-rendering: pixelated; image-rendering: crisp-edges; transform-origin:50% 88%; }
+.hero-pixel-stage .hero-aura { position:absolute; width:92px; height:22px; bottom:0; left:50%; transform:translateX(-50%); border-radius:50%; background:radial-gradient(ellipse,#91d7ff55,transparent 70%); pointer-events:none; z-index:-1; }
+.hero-pixel-stage.hero-warrior { --class-aura:#70c6ff; --class-glow:#306de2; }
+.hero-pixel-stage.hero-archer { --class-aura:#b0f17a; --class-glow:#28885f; }
+.hero-pixel-stage.hero-mage { --class-aura:#df9dff; --class-glow:#9150c5; }
+.hero-pixel-stage .spriteimg { filter: drop-shadow(0 5px 1px #101525aa) drop-shadow(0 0 6px var(--class-glow,#4b8ef0)); }
+.hero-pixel-stage.pose-idle .spriteimg { animation: hero-breathe 1.65s ease-in-out infinite alternate; }
+.hero-pixel-stage.pose-walk .spriteimg { animation: hero-walk .27s ease-in-out infinite alternate; }
+.hero-pixel-stage.pose-attack .spriteimg { animation: hero-slash .26s ease-out both; }
+.hero-pixel-stage.pose-skill .spriteimg { animation: hero-skill .52s ease-out both; }
+.hero-pixel-stage.pose-hit .spriteimg { animation: hero-hit .24s ease-out both; }
+.hero-pixel-stage.pose-victory .spriteimg { animation: hero-victory .7s ease-out infinite alternate; }
+@keyframes hero-breathe { to { transform:translateY(-4px) scale(1.025); } }
+@keyframes hero-walk { from {transform:translate(-2px,0) rotate(-2deg)} to {transform:translate(2px,-6px) rotate(2deg)} }
+@keyframes hero-slash { 0% {transform:translateX(-8px) rotate(-8deg)} 55% {transform:translateX(20px) rotate(12deg)} 100% {transform:translateX(0)} }
+@keyframes hero-skill { 0% {transform:scale(.9)} 45% {transform:scale(1.15) translateY(-8px);filter:drop-shadow(0 0 12px var(--class-aura))} 100% {transform:scale(1)} }
+@keyframes hero-hit { 50% {transform:translateX(-11px);filter:brightness(2)} }
+@keyframes hero-victory { to {transform:translateY(-14px) rotate(4deg)} }
+@media (prefers-reduced-motion:reduce) { .hero-pixel-stage .spriteimg {animation:none!important;transition:none!important} }
