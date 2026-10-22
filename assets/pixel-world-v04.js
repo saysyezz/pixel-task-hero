@@ -33,30 +33,44 @@ function update(){const field=document.getElementById('field');if(!field)return;
  if(type!==current){current=type;field.style.backgroundImage='url("'+generated[type]+'")';field.style.backgroundSize='100% 100%';field.style.backgroundRepeat='no-repeat';}
  const mountains=field.querySelectorAll('.mountain');mountains.forEach(el=>el.style.display='none');field.querySelectorAll('.bg-layer').forEach(el=>el.style.display='none');
 }
-function monster(kind,boss){
- const c=document.createElement('canvas');c.width=48;c.height=48;const p=c.getContext('2d');p.imageSmoothingEnabled=false;
- const colors=[['#2e6b57','#73deb5','#cdfbea'],['#365d77','#91d3ec','#e6fbff'],['#4c3b69','#b495e6','#ead8ff']][kind];
- // Outline, body and highlights are pixel-block primitives rather than emoji.
- if(kind===0){block(p,9,21,30,20,'#192d39');block(p,12,15,24,25,colors[0]);block(p,15,11,18,9,colors[1]);block(p,16,17,5,6,colors[2]);block(p,28,17,5,6,colors[2])}
- if(kind===1){block(p,9,11,30,32,'#182d3e');block(p,12,16,24,21,colors[0]);block(p,16,7,7,13,colors[1]);block(p,28,7,7,13,colors[1]);block(p,18,23,12,9,colors[1])}
- if(kind===2){block(p,13,10,22,32,'#1b2035');block(p,17,13,14,22,colors[0]);block(p,11,8,26,6,colors[1]);block(p,19,25,10,7,colors[2]);block(p,8,35,32,7,colors[1])}
- block(p,19,22,4,4,'#ffffff');block(p,28,22,4,4,'#ffffff');block(p,21,24,2,2,'#142632');block(p,30,24,2,2,'#142632');
- if(boss){block(p,14,2,20,5,'#ffcf69');block(p,15,0,4,6,'#f9eaad');block(p,29,0,4,6,'#f9eaad')}
- return c.toDataURL('image/png');
+// Monster families: meadow slime, horned hare, boar; forest mushroom, treant, wisp; dungeon skull, crystal golem, void eye.
+function monster(biome,variant,boss){
+ const cv=document.createElement('canvas');cv.width=64;cv.height=64;const c=cv.getContext('2d');c.imageSmoothingEnabled=false;
+ const p=[['#163e40','#49b999','#b8fbd8'],['#272f44','#6a9e79','#d0f5ac'],['#241e42','#8e77bd','#f4b9f9']][biome];
+ function b(x,y,w,h,color){block(c,x,y,w,h,color)}
+ function eye(x,y){b(x,y,6,7,'#182334');b(x+1,y+1,3,3,'#fffcef')}
+ if(variant===0){ // soft rounded creature / spectral slime
+ b(12,35,40,17,p[0]);b(17,23,30,29,p[1]);b(23,16,18,8,p[2]);b(11,46,43,6,p[0]);eye(22,34);eye(36,34);
+ b(27,45,10,3,p[0]);b(18,25,5,7,p[2]);
+ }else if(variant===1){ // big ears, arms and fantasy animal body
+ b(12,41,40,12,p[0]);b(18,25,29,24,p[1]);b(20,8,8,24,p[0]);b(21,10,5,20,p[2]);b(39,6,8,26,p[0]);b(40,9,5,20,p[2]);
+ b(9,37,11,9,p[1]);b(44,37,12,9,p[1]);eye(24,32);eye(38,32);b(30,41,5,3,'#ffb7aa');
+ }else{ // armored creature with angular silhouette
+ b(16,20,32,35,p[0]);b(21,16,22,32,p[1]);b(11,29,13,17,p[0]);b(40,29,13,17,p[0]);b(17,49,10,10,p[0]);b(37,49,10,10,p[0]);
+ b(26,21,13,8,p[2]);eye(24,32);eye(38,32);b(30,44,5,5,p[2]);
+ }
+ // Biome-specific silhouette details
+ if(biome===1){b(12,14,12,7,'#b7d8a3');b(40,13,11,7,'#b7d8a3');b(19,10,27,7,'#526b4d')}
+ if(biome===2){b(23,12,5,7,'#b59cfa');b(37,11,5,9,'#b59cfa');b(28,41,9,4,'#a38bde')}
+ if(boss){b(12,4,40,7,'#6e492f');b(16,0,8,12,'#ffc76b');b(29,2,8,9,'#ffeaa0');b(43,0,7,12,'#ffc76b');b(9,17,5,27,'#ffcc7488');b(50,17,5,27,'#ffcc7488')}
+ return cv.toDataURL('image/png');
 }
-const sprites=[0,1,2].map(i=>[false,true].map(boss=>monster(i,boss)));
-function updateMonster(){const el=document.getElementById('enemysprite'),field=document.getElementById('field');if(!el||!field)return;
- const theme=field.classList.contains('env-dungeon')?2:field.classList.contains('env-forest')?1:0;
- const boss=!!field.classList.contains('mvp-active');
- const url=sprites[theme][boss?1:0];
- const key=theme+':'+boss;
+const sprites=[0,1,2].map(biome=>[0,1,2].map(variant=>[false,true].map(boss=>monster(biome,variant,boss))));
+let lastMonsterKey='';
+function updateMonster(){
+ const el=document.getElementById('enemysprite'),field=document.getElementById('field'),label=document.getElementById('enemyname');
+ if(!el||!field||!label)return;
+ const biome=field.classList.contains('env-dungeon')?2:field.classList.contains('env-forest')?1:0;
+ const boss=field.classList.contains('mvp-active');
+ const name=label.textContent.split(' · HP')[0].replace(/^👑 /,'');
+ let hash=0;for(let i=0;i<name.length;i++)hash=(hash*31+name.charCodeAt(i))>>>0;
+ const variant=hash%3,key=biome+':'+variant+':'+boss+':'+name;
  if(lastMonsterKey===key && !el.textContent.trim())return;
- lastMonsterKey=key;
- el.dataset.worldSprite=url;
- el.textContent='';
- el.style.width=boss?'112px':'92px';el.style.height=boss?'112px':'92px';
- el.style.background='url("'+url+'") center/contain no-repeat';
+ lastMonsterKey=key;el.textContent='';
+ el.style.background='url("'+sprites[biome][variant][boss?1:0]+'") center/contain no-repeat';
  el.style.imageRendering='pixelated';
+ el.style.width=boss?'132px':'99px';el.style.height=boss?'132px':'99px';
+ el.style.transformOrigin='50% 90%';
 }
 function loop(){update();updateMonster();requestAnimationFrame(loop)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loop,{once:true});else loop();
