@@ -1,7 +1,11 @@
 /* Pixel Task Hero v0.4 — anime pixel hero visual layer.
    Scoped styles; enabled once the hero visual markup is wired into the game. */
 :root { --hero-pixel-size: 128px; }
-.hero-pixel-stage { position:relative; isolation:isolate; }
+.hero-pixel-stage { isolation:isolate; }
+/* Keep the battle sprite anchored to the ground. The original .fighter is absolute;
+   changing it to relative moves the entire hero into the top document flow. */
+.fighter.hero-pixel-stage { position:absolute; bottom:78px; left:18%; }
+.avatar-wrap.hero-pixel-stage { position:relative; }
 .hero-pixel-stage .spriteimg,
 .hero-pixel-stage .avatarimg { image-rendering: pixelated; image-rendering: crisp-edges; transform-origin:50% 88%; }
 .hero-pixel-stage .hero-aura { position:absolute; width:92px; height:22px; bottom:0; left:50%; transform:translateX(-50%); border-radius:50%; background:radial-gradient(ellipse,#91d7ff55,transparent 70%); pointer-events:none; z-index:-1; }
