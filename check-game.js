@@ -1,0 +1,14 @@
+const fs = require('node:fs');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const html = fs.readFileSync('index.html', 'utf8');
+assert.match(html, /<!doctype html>/i);
+assert.match(html, /PIXEL TASK HERO/i);
+for (const name of ['warrior','archer','mage']) assert.ok(html.includes(name), 'Missing class '+name);
+for (const id of ['fighter','avatar','bossbtn','classpick','rightcontent','hpbar','enemybar','savefile']) assert.ok(html.includes('id="'+id+'"'), 'Missing UI element '+id);
+const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).filter(s=>s.trim());
+assert.ok(scripts.length, 'No JavaScript found');
+for (const [i, code] of scripts.entries()) new vm.Script(code, {filename:'inline-'+i+'.js'});
+assert.ok(html.includes('localStorage'), 'Save storage not found');
+console.log('PASS: HTML, UI, game classes, JavaScript syntax, save references.');
+console.log('NOTE: This is a smoke test, not an actual browser gameplay test.');
