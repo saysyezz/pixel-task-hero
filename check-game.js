@@ -45,5 +45,12 @@ const pixelWorld = fs.readFileSync('assets/pixel-world-v04.js','utf8');
 new vm.Script(pixelWorld,{filename:'assets/pixel-world-v04.js'});
 for(const marker of ['generate(biome)','monster(kind,boss)','requestAnimationFrame(loop)','imageRendering']) assert.ok(pixelWorld.includes(marker),'Missing pixel world feature: '+marker);
 
+
+assert.ok(html.includes('id="sellCommon"'),'Bulk common-item sell control missing');
+assert.ok(html.includes("it.rarity!=='common'"),'Rare-item protection missing');
+assert.ok(html.includes("Object.values(state.equip).includes(it.id)"),'Equipped-item protection missing');
+assert.ok(html.includes('identity-v04'),'Hero identity stylesheet missing');
+assert.ok(pixelWorld.includes('monster(biome,variant,boss)'),'Monster family silhouettes missing');
+
 console.log('PASS: file completeness, UI, classes, animation, gameplay references, save system, JS syntax');
 console.log('NOTE: This does not replace interactive browser gameplay and visual regression testing.');
