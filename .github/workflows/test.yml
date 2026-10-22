@@ -24,3 +24,27 @@ jobs:
           node check-game.js
           node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');if(!s.includes('assets/hero-visuals-v04.css')||!s.includes('hero-pixel-stage'))process.exit(1);"
           node scripts/apply-hero-v04.cjs
+
+  browser-smoke:
+    if: github.ref == 'refs/heads/ai-development'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test tooling
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test game in Chromium
+        run: node scripts/browser-smoke.cjs
+      - name: Save QA screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta-04-chromium-screen
+          path: qa-beta04.png
+          if-no-files-found: ignore
