@@ -12,6 +12,9 @@ const path = require('node:path');
    assert.equal(await page.locator('#enemysprite').count(),1);
    assert.equal(await page.locator('#field').count(),1);
    assert.ok(await page.locator('#fighter').evaluate(el=>el.getBoundingClientRect().height>0),'Hero invisible');
+   await page.waitForFunction(()=>{const im=document.getElementById('fighter');return im.complete&&im.naturalWidth>0},null,{timeout:8000});
+   await page.waitForFunction(()=>{const im=document.getElementById('avatar');return im.complete&&im.naturalWidth>0},null,{timeout:8000});
+
    const field=await page.locator('#field').boundingBox();
    const hero=await page.locator('.fighter').boundingBox();
    assert.ok(hero.y>field.y && hero.y<field.y+field.height,'Hero not inside battlefield');
