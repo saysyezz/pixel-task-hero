@@ -39,5 +39,11 @@ assert.ok(html.includes("localStorage.setItem(KEY,JSON.stringify(state))"), 'Sav
 assert.ok(html.includes('localStorage.getItem(KEY)'), 'Save loader changed');
 assert.ok(html.includes('id="field"'), 'Battlefield missing');
 
+
+assert.ok(html.includes('assets/pixel-world-v04.js'), 'Pixel-world scene renderer not connected');
+const pixelWorld = fs.readFileSync('assets/pixel-world-v04.js','utf8');
+new vm.Script(pixelWorld,{filename:'assets/pixel-world-v04.js'});
+for(const marker of ['generate(biome)','monster(kind,boss)','requestAnimationFrame(loop)','imageRendering']) assert.ok(pixelWorld.includes(marker),'Missing pixel world feature: '+marker);
+
 console.log('PASS: file completeness, UI, classes, animation, gameplay references, save system, JS syntax');
 console.log('NOTE: This does not replace interactive browser gameplay and visual regression testing.');
