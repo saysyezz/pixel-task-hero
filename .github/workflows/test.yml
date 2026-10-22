@@ -16,4 +16,4 @@ jobs:
         with:
           node-version: '22'
       - name: Run game checks
-        run: node scripts/check-game.js
+        run: node check-game.js
