@@ -17,3 +17,10 @@ jobs:
           node-version: '22'
       - name: Run game checks
         run: node check-game.js
+      - name: Verify v0.4 hero visual upgrade in temporary CI workspace
+        if: github.ref == 'refs/heads/ai-development'
+        run: |
+          node scripts/apply-hero-v04.cjs
+          node check-game.js
+          node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');if(!s.includes('assets/hero-visuals-v04.css')||!s.includes('hero-pixel-stage'))process.exit(1);"
+          node scripts/apply-hero-v04.cjs
