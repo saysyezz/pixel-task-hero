@@ -29,5 +29,15 @@ const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
   .map(match => match[1]).filter(Boolean);
 assert.ok(scripts.length, 'No inline JavaScript found');
 scripts.forEach((source, i) => new vm.Script(source, { filename: 'game-inline-' + i + '.js' }));
+
+for (const marker of ['stage-v04-inline','stage-theme-indicator','updateStageEnvironment()',
+                       'env-forest','env-dungeon','spawnHeroVfx(action)',
+                       'monster-v04-styles','monsterPose(type)','monster-attack']) {
+  assert.ok(html.includes(marker), 'Missing v0.4 visual/game integration: ' + marker);
+}
+assert.ok(html.includes("localStorage.setItem(KEY,JSON.stringify(state))"), 'Save implementation changed');
+assert.ok(html.includes('localStorage.getItem(KEY)'), 'Save loader changed');
+assert.ok(html.includes('id="field"'), 'Battlefield missing');
+
 console.log('PASS: file completeness, UI, classes, animation, gameplay references, save system, JS syntax');
 console.log('NOTE: This does not replace interactive browser gameplay and visual regression testing.');
