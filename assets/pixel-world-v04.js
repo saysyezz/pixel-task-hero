@@ -31,7 +31,7 @@ const generated=[0,1,2].map(generate);
 let current=-1;
 function update(){const field=document.getElementById('field');if(!field)return;const type=field.classList.contains('env-dungeon')?2:field.classList.contains('env-forest')?1:0;
  if(type!==current){current=type;field.style.backgroundImage='url("'+generated[type]+'")';field.style.backgroundSize='100% 100%';field.style.backgroundRepeat='no-repeat';}
- const mountains=field.querySelectorAll('.mountain');mountains.forEach(el=>el.style.display='none');
+ const mountains=field.querySelectorAll('.mountain');mountains.forEach(el=>el.style.display='none');field.querySelectorAll('.bg-layer').forEach(el=>el.style.display='none');
 }
 function monster(kind,boss){
  const c=document.createElement('canvas');c.width=48;c.height=48;const p=c.getContext('2d');p.imageSmoothingEnabled=false;
@@ -49,7 +49,7 @@ function updateMonster(){const el=document.getElementById('enemysprite'),field=d
  const theme=field.classList.contains('env-dungeon')?2:field.classList.contains('env-forest')?1:0;
  const boss=!!field.classList.contains('mvp-active');
  const url=sprites[theme][boss?1:0];
- if(el.dataset.worldSprite===url)return;
+ if(el.dataset.worldSprite===url && !el.textContent.trim())return;
  el.dataset.worldSprite=url;
  el.textContent='';
  el.style.width=boss?'112px':'92px';el.style.height=boss?'112px':'92px';
