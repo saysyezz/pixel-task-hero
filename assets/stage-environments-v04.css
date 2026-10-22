@@ -1,0 +1,18 @@
+/* v0.4 Stage environments — layered, scoped to the battle field */
+.playfield.stage-environment{isolation:isolate;transition:background 1.2s ease}
+.stage-environment .bg-layer{position:absolute;inset:0;pointer-events:none}
+.stage-environment .bg-sky{z-index:0;background:linear-gradient(180deg,var(--sky-top),var(--sky-bottom) 62%,transparent 63%)}
+.stage-environment .bg-far{z-index:1;opacity:.48;background:repeating-linear-gradient(122deg,transparent 0 40px,var(--hill) 41px 65px,transparent 66px 135px);clip-path:polygon(0 62%,12% 25%,24% 55%,38% 12%,52% 60%,68% 23%,81% 55%,95% 20%,100% 62%,100% 100%,0 100%);animation:bg-drift 34s linear infinite alternate}
+.stage-environment .bg-mid{z-index:1;top:44%;background:linear-gradient(180deg,transparent,var(--mist) 62%,transparent);opacity:.34;animation:bg-mist 9s ease-in-out infinite alternate}
+.stage-environment .bg-fireflies{z-index:2;opacity:.6;background-image:radial-gradient(circle,#fff9c4 1.5px,transparent 3px),radial-gradient(circle,#b8ffdf 1px,transparent 3px);background-size:115px 89px,173px 109px;animation:bg-drift 24s linear infinite alternate}
+.stage-environment .mountain{z-index:1;opacity:.5}
+.stage-environment .tree{z-index:3}
+.stage-environment .ground{z-index:3}
+.stage-environment .fighter,.stage-environment .foe{z-index:5}
+.stage-environment.env-meadow{--sky-top:#4d95cb;--sky-bottom:#a6dac1;--hill:#4e7d86;--mist:#dbffcd}
+.stage-environment.env-forest{--sky-top:#25495f;--sky-bottom:#659078;--hill:#1b6056;--mist:#b0f3c5}
+.stage-environment.env-dungeon{--sky-top:#20213f;--sky-bottom:#4d425f;--hill:#29263f;--mist:#b9a0ff}
+.stage-environment.env-dungeon .bg-fireflies{background-image:radial-gradient(circle,#b9a0ff 1.8px,transparent 3px),radial-gradient(circle,#6a9dff 1px,transparent 3px)}
+@keyframes bg-drift{from{transform:translateX(-10px)}to{transform:translateX(10px)}}
+@keyframes bg-mist{from{opacity:.15;transform:translateY(4px)}to{opacity:.45;transform:translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){.stage-environment .bg-layer{animation:none!important}}
