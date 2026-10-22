@@ -1,0 +1,30 @@
+name: Preview v0.4 link
+
+on:
+  push:
+    branches: [ai-development]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify development preview document is reachable
+        run: |
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 5 --max-time 35 -o /tmp/preview.html             "https://raw.githack.com/saysyezz/pixel-task-hero/ai-development/index.html"
+          test "$(wc -c < /tmp/preview.html)" -gt 10000
+          grep -qi "PIXEL TASK HERO" /tmp/preview.html
+          grep -q "hero-pixel-stage" /tmp/preview.html
+      - name: Verify hero visual CSS is reachable
+        run: |
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 5 --max-time 35 -o /tmp/hero.css             "https://raw.githack.com/saysyezz/pixel-task-hero/ai-development/assets/hero-visuals-v04.css"
+          grep -q "hero-warrior" /tmp/hero.css
+          grep -q "hero-archer" /tmp/hero.css
+          grep -q "hero-mage" /tmp/hero.css
+      - name: Preview URL
+        run: |
+          echo "Preview: https://raw.githack.com/saysyezz/pixel-task-hero/ai-development/index.html" >> "$GITHUB_STEP_SUMMARY"
+          echo "This is a third-party static preview. Main GitHub Pages remains unchanged." >> "$GITHUB_STEP_SUMMARY"
