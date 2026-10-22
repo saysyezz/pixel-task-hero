@@ -46,5 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: beta-04-chromium-screen
-          path: qa-beta04.png
+          path: |
+            qa-beta04.png
+            qa-stage-*.png
           if-no-files-found: ignore
